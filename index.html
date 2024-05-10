@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>JS TOTP</title>
+    <script src="jquery.min.js"></script>
+    <script src="jsOTP.min.js"></script>
+    <style>
+      body {
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+      }
+    </style>
+  </head>
+  <body style="width: 45em">
+    <h1>TOTP算法</h1>
+    <p>Javascript Implementation of 2 Factor Auth</p>
+    <hr />
+    <p>
+      Your two-factor secret:
+      <input type="text" id="secret" value="JBSWY3DPEHPK3PXP" />
+      <button onclick="updateTotp()">刷新</button>
+    </p>
+    <h2 id="code">TOTP code</h2>
+    <p id="ticker">timer</p>
+    <hr />
+    <script>
+      function updateTotp() {
+        var secret = $("#secret").val();
+        var totp = new jsOTP.totp(30, 6);
+        var code = totp.getOtp(secret);
+        $("#code").text(code);
+      }
+
+      setInterval(function () {
+        var epoch = Math.round(new Date().getTime() / 1000.0);
+        var countDown = 30 - (epoch % 30);
+        $("#ticker").text(countDown);
+
+        if (epoch % 30 == 0) updateTotp();
+      }, 1000);
+
+      updateTotp();
+    </script>
+  </body>
+</html>
